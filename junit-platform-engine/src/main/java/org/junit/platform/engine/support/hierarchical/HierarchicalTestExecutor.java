@@ -61,6 +61,7 @@ class HierarchicalTestExecutor<C extends EngineExecutionContext> {
 			SkipResult skipResult = node.shouldBeSkipped(preparedContext);
 			if (skipResult.isSkipped()) {
 				this.listener.executionSkipped(testDescriptor, skipResult.getReason().orElse("<unknown>"));
+				node.cleanup(preparedContext);
 				return;
 			}
 		}
@@ -69,6 +70,7 @@ class HierarchicalTestExecutor<C extends EngineExecutionContext> {
 			// We call executionStarted first to comply with the contract of EngineExecutionListener
 			this.listener.executionStarted(testDescriptor);
 			this.listener.executionFinished(testDescriptor, TestExecutionResult.failed(throwable));
+			// node.cleanup(preparedContext); // Variable `preparedContext` might not have been initialized.
 			return;
 		}
 
@@ -93,7 +95,12 @@ class HierarchicalTestExecutor<C extends EngineExecutionContext> {
 				// @formatter:on
 			}
 			finally {
-				node.after(context);
+				try {
+					node.after(context);
+				}
+				finally {
+					node.cleanup(context);
+				}
 			}
 		});
 

@@ -26,6 +26,7 @@ import org.apiguardian.api.API;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContextException;
+import org.junit.platform.commons.util.ExceptionUtils;
 
 /**
  * {@code ExtensionValuesStore} is used inside implementations of
@@ -41,6 +42,24 @@ public class ExtensionValuesStore {
 
 	public ExtensionValuesStore(ExtensionValuesStore parentStore) {
 		this.parentStore = parentStore;
+	}
+
+	// Only effects values stored in this instance -- it does not close values in parent stores.
+	public void closeAllStoredAutoCloseableValues() {
+		if (storedValues.isEmpty()) {
+			return;
+		}
+		for (Supplier<Object> supplier : storedValues.values()) {
+			Object value = supplier.get();
+			if (value instanceof AutoCloseable) {
+				try {
+					((AutoCloseable) value).close();
+				}
+				catch (Exception e) {
+					ExceptionUtils.throwAsUncheckedException(e);
+				}
+			}
+		}
 	}
 
 	Object get(Namespace namespace, Object key) {

@@ -40,7 +40,12 @@ import org.junit.platform.commons.util.Preconditions;
  * @see Namespace
  */
 @API(status = STABLE, since = "5.0")
-public interface ExtensionContext {
+public interface ExtensionContext extends AutoCloseable {
+
+	@Override
+	default void close() {
+
+	}
 
 	/**
 	 * Get the parent extension context, if available.

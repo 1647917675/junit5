@@ -40,6 +40,11 @@ public class JupiterEngineExecutionContext implements EngineExecutionContext {
 		this.state = state;
 	}
 
+	@Override
+	public void close() {
+		getExtensionContext().close();
+	}
+
 	public EngineExecutionListener getExecutionListener() {
 		return this.state.executionListener;
 	}

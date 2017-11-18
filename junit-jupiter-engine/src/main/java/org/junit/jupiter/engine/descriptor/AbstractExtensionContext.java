@@ -53,6 +53,11 @@ abstract class AbstractExtensionContext<T extends TestDescriptor> implements Ext
 	}
 
 	@Override
+	public void close() {
+		valuesStore.closeAllStoredAutoCloseableValues();
+	}
+
+	@Override
 	public String getUniqueId() {
 		return getTestDescriptor().getUniqueId().toString();
 	}
