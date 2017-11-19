@@ -29,7 +29,7 @@ import org.junit.platform.engine.reporting.ReportEntry;
 /**
  * @since 5.0
  */
-abstract class AbstractExtensionContext<T extends TestDescriptor> implements ExtensionContext {
+abstract class AbstractExtensionContext<T extends TestDescriptor> implements ExtensionContext, AutoCloseable {
 
 	private final ExtensionContext parent;
 	private final EngineExecutionListener engineExecutionListener;

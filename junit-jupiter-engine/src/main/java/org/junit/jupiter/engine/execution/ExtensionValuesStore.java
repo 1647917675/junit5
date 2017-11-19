@@ -46,9 +46,6 @@ public class ExtensionValuesStore {
 
 	// Only effects values stored in this instance -- it does not close values in parent stores.
 	public void closeAllStoredAutoCloseableValues() {
-		if (storedValues.isEmpty()) {
-			return;
-		}
 		for (Supplier<Object> supplier : storedValues.values()) {
 			Object value = supplier.get();
 			if (value instanceof AutoCloseable) {

@@ -42,7 +42,15 @@ public class JupiterEngineExecutionContext implements EngineExecutionContext {
 
 	@Override
 	public void close() {
-		getExtensionContext().close();
+		ExtensionContext extensionContext = getExtensionContext();
+		if (extensionContext instanceof AutoCloseable) {
+			try {
+				((AutoCloseable) extensionContext).close();
+			}
+			catch (Exception e) {
+				// TODO Handle (log, collect, rethrow) exception...
+			}
+		}
 	}
 
 	public EngineExecutionListener getExecutionListener() {
